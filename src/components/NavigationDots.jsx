@@ -28,8 +28,11 @@ const NavigationDots = ({ active }) => {
         <a
           href={`#${item}`}
           key={item + index}
+          aria-label={`Navigate to ${item} section`}
           style={active === item ? { ...dotStyle, backgroundColor: '#313BAC' } : dotStyle}
-        />
+        >
+          <span className="sr-only">{`Navigate to ${item}`}</span>
+        </a>
       ))}
     </div>
   );

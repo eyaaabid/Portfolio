@@ -11,13 +11,10 @@ import about03 from '../assets/about03.png';
 import email from '../assets/email.png';
 import mobile from '../assets/mobile.png';
 
-
-
-
-export default {
+const images = {
     LogoPortfolio,
     profile,
-    circle ,
+    circle,
     bgIMG,
     flutter,
     node,
@@ -27,5 +24,6 @@ export default {
     about03,
     email,
     mobile
-
 };
+
+export default images;
