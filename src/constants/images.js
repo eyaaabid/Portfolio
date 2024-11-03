@@ -1,5 +1,5 @@
 import LogoPortfolio from '../assets/LogoPortfolio.png';
-import profile from '../assets/profile.png';
+import  profile from '../assets/profile.png';
 import circle from '../assets/circle.svg';
 import bgIMG from '../assets/bgIMG.png';
 import flutter from '../assets/flutter.png';
@@ -10,6 +10,7 @@ import about02 from '../assets/about02.png';
 import about03 from '../assets/about03.png';
 import email from '../assets/email.png';
 import mobile from '../assets/mobile.png';
+
 
 const images = {
     LogoPortfolio,
@@ -23,7 +24,7 @@ const images = {
     about02,
     about03,
     email,
-    mobile
+    mobile,
 };
 
 export default images;
