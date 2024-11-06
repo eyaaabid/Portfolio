@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-
+import { HiChevronLeft, HiChevronRight, HiX } from 'react-icons/hi'; // Import HiX for the close button icon
 import { AppWrap, MotionWrap } from '../../wrapper';
 import { urlFor, client } from '../../client';
 import './Testimonial.scss';
@@ -8,19 +7,21 @@ import './Testimonial.scss';
 const Testimonial = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [testimonials, setTestimonials] = useState([]);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   const handleClick = (index) => {
     setCurrentIndex(index);
   };
 
+  const toggleCertificate = () => {
+    setShowCertificate(!showCertificate);
+  };
+
   useEffect(() => {
     const query = '*[_type == "testimonials"]';
     client.fetch(query).then((data) => {
-      console.log(data);  
-
       setTestimonials(data);
     });
-
   }, []);
 
   return (
@@ -36,6 +37,19 @@ const Testimonial = () => {
               </div>
               <p className="p-text">{testimonials[currentIndex].feedback}</p>
 
+              <div className="button-container">
+                <button onClick={toggleCertificate} className="see-certification-btn">See Certificate</button>
+              </div>
+
+              {showCertificate && (
+                <div className="certificate-modal">
+                  <img src={urlFor(testimonials[currentIndex].certificateurl
+                  )} alt="Certification" />
+                  <button onClick={toggleCertificate} className="close-modal-btn">
+                    <HiX size={24} /> {/* Close button icon */}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -43,15 +57,12 @@ const Testimonial = () => {
             <div className="app__flex" onClick={() => handleClick(currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1)}>
               <HiChevronLeft />
             </div>
-
             <div className="app__flex" onClick={() => handleClick(currentIndex === testimonials.length - 1 ? 0 : currentIndex + 1)}>
               <HiChevronRight />
             </div>
           </div>
         </>
       )}
-
-
     </>
   );
 };

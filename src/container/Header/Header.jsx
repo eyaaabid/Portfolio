@@ -35,6 +35,7 @@ const Header = () => {
             <p className='p-text'>Web/Mobile Developer</p>
             <p className='p-text'>UI/UX Designer</p>
           </div>
+          
 
         </div>
 
