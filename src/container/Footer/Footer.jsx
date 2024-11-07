@@ -18,26 +18,9 @@ const Footer = () => {
   };
 
   const handleSubmit = () => {
-    setLoading(true);
+    window.location.href = `mailto:eyaabid60@gmail.com?subject=Contact from ${formData.name}&body=Hi, my name is ${formData.name}. ${formData.message}`;
+};
 
-    const contact = {
-      _type: 'contact',
-      name: formData.name,
-      email: formData.email,
-      message: formData.message,
-    };
-
-    // Save contact to Sanity
-    client.create(contact)
-      .then(() => {
-        setLoading(false);
-        setIsFormSubmitted(true);
-
-        // Use mailto to open the email client
-        window.location.href = `mailto:eyaabid60@gmail.com?subject=Contact from ${formData.name}&body=Hi, my name is ${formData.name}. ${formData.message}`;
-      })
-      .catch((err) => console.log(err));
-  };
 
   return (
     <>
