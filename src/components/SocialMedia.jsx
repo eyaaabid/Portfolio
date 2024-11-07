@@ -19,13 +19,31 @@ const SocialMedia = () => {
   }, []);
 
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (cvUrl) {
-      window.open(cvUrl, '_blank');
+      try {
+        const response = await fetch(cvUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'eyaabidCV.pdf';
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Failed to download CV:", error);
+      }
     } else {
       console.error("CV URL is not available");
     }
   };
+
+
 
   return (
     <div className="app__social">
