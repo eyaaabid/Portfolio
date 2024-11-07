@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AiFillEye, AiFillGithub } from 'react-icons/ai';
+import { AiFillEye, AiFillGithub, AiOutlineClose } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import { AppWrap, MotionWrap } from '../../wrapper';
 import { urlFor, client } from '../../client';
@@ -10,7 +10,7 @@ const Work = () => {
   const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
   const [works, setWorks] = useState([]);
   const [filterWork, setFilterWork] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null); // New state for the modal
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const query = '*[_type == "works"]';
@@ -25,11 +25,7 @@ const Work = () => {
     setAnimateCard([{ y: 100, opacity: 0 }]);
     setTimeout(() => {
       setAnimateCard([{ y: 0, opacity: 1 }]);
-      if (item === 'All') {
-        setFilterWork(works);
-      } else {
-        setFilterWork(works.filter((work) => work.tags.includes(item)));
-      }
+      setFilterWork(item === 'All' ? works : works.filter((work) => work.tags.includes(item)));
     }, 500);
   };
 
@@ -71,10 +67,7 @@ const Work = () => {
                 transition={{ duration: 0.25, ease: 'easeInOut', staggerChildren: 0.5 }}
                 className='app__work-hover app__flex'
               >
-                <div
-                  onClick={() => openModal(urlFor(work.imgUrl))} // Open modal with image URL
-                  className='app__flex'
-                >
+                <div onClick={() => openModal(urlFor(work.imgUrl))} className='app__flex'>
                   <AiFillEye />
                 </div>
                 <a href={work.projectLink} target='_blank' rel='noreferrer'>
@@ -104,7 +97,9 @@ const Work = () => {
         <div className='app__modal' onClick={closeModal}>
           <div className='app__modal-content' onClick={(e) => e.stopPropagation()}>
             <img src={selectedImage} alt='Enlarged work' />
-            <button onClick={closeModal}>Close</button>
+            <button className='app__modal-close' onClick={closeModal}>
+              <AiOutlineClose />
+            </button>
           </div>
         </div>
       )}

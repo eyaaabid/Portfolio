@@ -10,7 +10,7 @@ const Footer = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { username, email, message } = formData;
+  const { name, email, message } = formData;
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -22,15 +22,19 @@ const Footer = () => {
 
     const contact = {
       _type: 'contact',
-      name: formData.username,
+      name: formData.name,
       email: formData.email,
       message: formData.message,
     };
 
+    // Save contact to Sanity
     client.create(contact)
       .then(() => {
         setLoading(false);
         setIsFormSubmitted(true);
+
+        // Use mailto to open the email client
+        window.location.href = `mailto:eyaabid60@gmail.com?subject=Contact from ${formData.name}&body=Hi, my name is ${formData.name}. ${formData.message}`;
       })
       .catch((err) => console.log(err));
   };
@@ -52,7 +56,7 @@ const Footer = () => {
       {!isFormSubmitted ? (
         <div className="app__footer-form app__flex">
           <div className="app__flex">
-            <input className="p-text" type="text" placeholder="Your Name" name="username" value={username} onChange={handleChangeInput} />
+            <input className="p-text" type="text" placeholder="Your Name" name="name" value={name} onChange={handleChangeInput} />
           </div>
           <div className="app__flex">
             <input className="p-text" type="email" placeholder="Your Email" name="email" value={email} onChange={handleChangeInput} />
