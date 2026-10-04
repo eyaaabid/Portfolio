@@ -3,65 +3,48 @@ import { BsGithub, BsLinkedin } from 'react-icons/bs';
 import { AiOutlineDownload } from 'react-icons/ai';
 import { client } from '../client';
 
+// Name of the file the visitor gets, whatever the PDF is called in Sanity
+const DOWNLOAD_NAME = 'eyaabidCV.pdf';
+
 const SocialMedia = () => {
   const [cvUrl, setCvUrl] = useState('');
 
   useEffect(() => {
-    const query = `*[_type == "cv"][0]{cvFile{asset->{url}}}`;
-    client.fetch(query).then((data) => {
+    // Most recently updated CV document, so re-uploading in the Studio replaces it
+    const query = '*[_type == "cv"] | order(_updatedAt desc)[0]{ "url": file.asset->url }';
 
-      if (data && data.cvFile && data.cvFile.asset && data.cvFile.asset.url) {
-        setCvUrl(data.cvFile.asset.url);
-      } else {
-        console.error("No CV URL found");
-      }
-    }).catch(error => console.error("Fetch error:", error));
+    client
+      .fetch(query)
+      .then((data) => setCvUrl(data?.url || ''))
+      .catch((error) => console.error('Failed to load CV:', error));
   }, []);
-
-
-  const handleDownload = async () => {
-    if (cvUrl) {
-      try {
-        const response = await fetch(cvUrl);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'eyaabidCV.pdf';
-        document.body.appendChild(link);
-        link.click();
-
-        // Clean up
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(link);
-      } catch (error) {
-        console.error("Failed to download CV:", error);
-      }
-    } else {
-      console.error("CV URL is not available");
-    }
-  };
-
-
 
   return (
     <div className="app__social">
       <div>
-        <a href="https://github.com/eyaaabid" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/eyaaabid" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
           <BsGithub />
         </a>
       </div>
       <div>
-        <a href="https://www.linkedin.com/in/eya-abid-44953021a/" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://www.linkedin.com/in/eya-abid-44953021a/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+        >
           <BsLinkedin />
         </a>
       </div>
-      <div>
-        <button onClick={handleDownload} title="Download CV" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <AiOutlineDownload />
-        </button>
-      </div>
+      {/* Only shown once a CV is uploaded and published in the Studio.
+          "?dl=" makes Sanity's CDN send the file as a download instead of opening it. */}
+      {cvUrl && (
+        <div>
+          <a href={`${cvUrl}?dl=${DOWNLOAD_NAME}`} download={DOWNLOAD_NAME} title="Download CV" aria-label="Download CV">
+            <AiOutlineDownload />
+          </a>
+        </div>
+      )}
     </div>
   );
 };

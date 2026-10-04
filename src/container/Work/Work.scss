@@ -41,119 +41,172 @@
   }
 }
 
+/* ---------- Project cards: one grid, every card the same size ---------- */
+
 .app__work-portfolio {
-  display: flex;
-  flex-wrap: wrap;
+  width: 100%;
+  display: grid;
+  // Fixed-width columns (290px to 340px), as many as fit, centred
+  grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 340px));
+  // Every row as tall as the tallest card, so all cards match
+  grid-auto-rows: 1fr;
   justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+
+  @media screen and (min-width: 2000px) {
+    grid-template-columns: repeat(auto-fill, minmax(420px, 480px));
+    gap: 3rem;
+  }
+}
+
+.app__work-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  color: #000;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  @media screen and (min-width: 2000px) {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+}
+
+// Same image area on every card. object-fit: contain shows the WHOLE screenshot;
+// the blurred copy of the image behind it fills any empty space.
+.app__work-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background-color: var(--primary-color, #edf2f8);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--img);
+    background-size: cover;
+    background-position: center;
+    filter: blur(18px) saturate(1.15);
+    transform: scale(1.25); // hides the blurred edges
+    opacity: 0.5;
+  }
+
+  img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+// Dark overlay with an eye icon. Shown with CSS only (no JS), so it disappears
+// as soon as the cursor leaves the image.
+.app__work-hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 
-  .app__work-item {
-    width: 270px;
-    flex-direction: column;
+  .app__work-eye {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    transform: scale(0.85);
+    transition: transform 0.25s ease;
 
-    margin: 2rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    color: #000;
-
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-    }
-
-    @media screen and (min-width: 2000px) {
-      width: 470px;
-      padding: 1.25rem;
-      border-radius: 0.75rem;
-    }
-
-    @media screen and (max-width: 300px) {
-      width: 100%;
-      margin: 1rem;
+    svg {
+      width: 50%;
+      height: 50%;
+      color: var(--white-color, #fff);
     }
   }
 }
 
 .app__work-img {
-  width: 100%;
-  height: 230px;
+  cursor: zoom-in;
+  outline: none;
 
-  position: relative;
-
-  img {
-    width: 100%;
-    height: 100%;
-    border-radius: 0.5rem;
-    object-fit: cover;
-  }
-
-  @media screen and (min-width: 2000px) {
-    height: 350px;
-  }
-}
-
-.app__work-hover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-
-  border-radius: 0.5rem;
-  opacity: 0;
-  transition: all 0.3s ease;
-
-  div {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-
-    margin: 1rem;
-    font-family: var(--font-base);
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    svg {
-      width: 50%;
-      height: 50%;
-      color: var(--white-color);
+  &:hover,
+  &:focus-visible {
+    .app__work-hover {
+      opacity: 1;
     }
+
+    .app__work-eye {
+      transform: scale(1);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--secondary-color, #313bac);
   }
 }
 
 .app__work-content {
-  padding: 0.5rem;
-  width: 100%;
-  position: relative;
+  flex: 1; // fills the rest of the card so all cards end at the same line
+  display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 0.5rem 0.5rem;
+
+  // Category tag now sits above the title instead of overlapping the image
+  .app__work-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background-color: rgba(49, 59, 172, 0.1);
+    color: var(--secondary-color, #313bac);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
 
   h4 {
-    margin-top: 1rem;
-    line-height: 1.5;
+    margin-top: 0.75rem;
+    line-height: 1.4;
+    text-align: left;
 
     @media screen and (min-width: 2000px) {
-      margin-top: 3rem;
+      margin-top: 1.5rem;
     }
   }
 
-  .app__work-tag {
-    position: absolute;
+  p {
+    margin-top: 0.6rem;
+    text-align: left;
 
-    padding: 0.5rem 1rem;
-    border-radius: 10px;
-    background-color: #fff;
-    top: -25px;
+    // Keeps very long descriptions from stretching every card (hover to read it all)
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
+
+/* ---------- Enlarged image ---------- */
 
 .app__modal {
   position: fixed;
@@ -161,6 +214,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1000;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
@@ -174,12 +228,14 @@
   border-radius: 8px;
   text-align: center;
   max-width: 90%;
-  max-height: 80%;
+  max-height: 90vh;
 }
 
 .app__modal-content img {
+  display: block;
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(90vh - 40px);
+  object-fit: contain;
 }
 
 .app__modal-close {
