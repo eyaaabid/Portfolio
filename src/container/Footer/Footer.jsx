@@ -7,8 +7,8 @@ import './Footer.scss';
 
 const Footer = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isFormSubmitted] = useState(false);
+  const [loading] = useState(false);
 
   const { name, email, message } = formData;
 
